@@ -122,7 +122,8 @@ class _SettingsPageState extends State<SettingsPage> {
       children: [
         Positioned.fill(
           child: Image.asset(
-            'assets/settings_bg.png', // Use the provided background image asset path
+            'assets/settings_bg.png',
+            // Use the provided background image asset path
             fit: BoxFit.cover,
           ),
         ),
@@ -188,7 +189,9 @@ class _SettingsPageState extends State<SettingsPage> {
                             borderRadius: BorderRadius.circular(25.r),
                           ),
                           padding: EdgeInsets.symmetric(
-                              horizontal: 30.w, vertical: 15.h),
+                            horizontal: 25.w,
+                            vertical: 15.h,
+                          ),
                           fixedSize: Size(158.w, 52.h),
                         ),
                         child: Row(
