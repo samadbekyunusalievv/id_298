@@ -98,7 +98,7 @@ class _TwoPlayerGamePageState extends State<TwoPlayerGamePage> with RouteAware {
   void _startTimer() {
     _timer?.cancel();
     _timeLeft = 3;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_gameActive && !isPaused) {
         setState(() {
           if (_timeLeft > 0) {
@@ -188,7 +188,7 @@ class _TwoPlayerGamePageState extends State<TwoPlayerGamePage> with RouteAware {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             timer?.cancel();
-            timer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+            timer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
               if (preparationTimeLeft > 0) {
                 if (mounted) {
                   setState(() => preparationTimeLeft--);
@@ -274,7 +274,7 @@ class _TwoPlayerGamePageState extends State<TwoPlayerGamePage> with RouteAware {
       },
     );
 
-    _premiumDialogTimer = Timer(Duration(seconds: 5), () {
+    _premiumDialogTimer = Timer(const Duration(seconds: 5), () {
       if (Navigator.of(context).canPop()) {
         Navigator.of(context).pop();
         _resumeGame();
@@ -302,378 +302,395 @@ class _TwoPlayerGamePageState extends State<TwoPlayerGamePage> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
-    ScreenUtil.init(context, designSize: Size(375, 812));
+    ScreenUtil.init(context, designSize: const Size(375, 812));
     double cellWidth = 59.w;
     double cellHeight = 61.w;
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(0, 0, 0, 0.25),
-        elevation: 0,
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.h),
-          child: Container(
-            color: Color.fromRGBO(255, 102, 56, 0.25),
-            height: 1.h,
+    return WillPopScope(
+      onWillPop: () async {
+        _showLeaveGameDialog();
+        return false; // Prevent the default back button behavior
+      },
+      child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: const Color.fromRGBO(0, 0, 0, 0.25),
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(1.h),
+            child: Container(
+              color: const Color.fromRGBO(255, 102, 56, 0.25),
+              height: 1.h,
+            ),
+          ),
+          title: Text(
+            'Two Player',
+            style: TextStyle(
+              fontFamily: 'Lineal',
+              fontWeight: FontWeight.w400,
+              fontSize: 20.sp,
+              height: 22 / 20,
+              color: const Color.fromRGBO(255, 102, 56, 1),
+            ),
+            textAlign: TextAlign.center,
+          ),
+          centerTitle: true,
+          toolbarHeight: 45.h,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios,
+                size: 16.r, color: const Color.fromRGBO(255, 102, 56, 1)),
+            onPressed: () {
+              _showLeaveGameDialog();
+            },
           ),
         ),
-        title: Text(
-          'Two Player',
-          style: TextStyle(
-            fontFamily: 'Lineal',
-            fontWeight: FontWeight.w400,
-            fontSize: 20.sp,
-            height: 22 / 20,
-            color: Color.fromRGBO(255, 102, 56, 1),
-          ),
-          textAlign: TextAlign.center,
-        ),
-        centerTitle: true,
-        toolbarHeight: 45.h,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,
-              size: 16.r, color: Color.fromRGBO(255, 102, 56, 1)),
-          onPressed: () {
-            _showLeaveGameDialog();
-          },
-        ),
-      ),
-      body: LayoutBuilder(
-        builder: (context, constraints) {
-          double gridSidePadding = 72.5.w;
-          double gridTopBottomPadding = 57.5.w;
-          double vectorImageHeight =
-              3 * cellHeight + 2 * 0.5 + 2 * gridTopBottomPadding;
-          double gridTopPadding = 240.h + gridTopBottomPadding;
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            double gridSidePadding = 72.5.w;
+            double gridTopBottomPadding = 57.5.w;
+            double vectorImageHeight =
+                3 * cellHeight + 2 * 0.5 + 2 * gridTopBottomPadding;
+            double gridTopPadding = 240.h + gridTopBottomPadding;
 
-          double availableHeight = constraints.maxHeight -
-              (gridTopPadding +
-                  3 * cellHeight +
-                  2 * 0.5 +
-                  kToolbarHeight.h +
-                  80.h);
-          double scoreContainerHeight = max(min(60.h, availableHeight / 3), 0);
+            double availableHeight = constraints.maxHeight -
+                (gridTopPadding +
+                    3 * cellHeight +
+                    2 * 0.5 +
+                    kToolbarHeight.h +
+                    80.h);
+            double scoreContainerHeight =
+                max(min(60.h, availableHeight / 3), 0);
 
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: constraints.maxHeight,
-              ),
-              child: IntrinsicHeight(
-                child: Stack(
-                  children: [
-                    Container(
-                      color: Color(0xFF171717),
-                    ),
-                    Positioned(
-                      top: 236.h,
-                      left: 0,
-                      right: 0,
-                      child: Image.asset(
-                        'assets/vector.png',
-                        width: constraints.maxWidth,
-                        height: vectorImageHeight,
-                        fit: BoxFit.fill,
+            return SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight,
+                ),
+                child: IntrinsicHeight(
+                  child: Stack(
+                    children: [
+                      Container(
+                        color: const Color(0xFF171717),
                       ),
-                    ),
-                    Positioned(
-                      top: gridTopPadding,
-                      left: gridSidePadding,
-                      right: gridSidePadding,
-                      child: Container(
-                        width: constraints.maxWidth - 2 * gridSidePadding,
-                        height: 3 * cellHeight + 2 * 0.5,
-                        child: GridView.builder(
-                          padding: EdgeInsets.zero,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: 12,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            childAspectRatio: cellWidth / cellHeight,
-                          ),
-                          itemBuilder: (context, index) {
-                            int row = index ~/ 4 + 1;
-                            int column = index % 4 + 1;
-                            return Container(
-                              width: cellWidth,
-                              height: cellHeight,
-                              decoration: BoxDecoration(
-                                color: Color.fromRGBO(206, 231, 242, 1),
-                                border:
-                                    Border.all(color: Colors.black, width: 0.5),
-                              ),
-                              child: Center(
-                                child: row == ballRow && column == ballColumn
-                                    ? Image.asset(
-                                        'assets/ball.png',
-                                        width: 37.r,
-                                        height: 37.r,
-                                      )
-                                    : null,
-                              ),
-                            );
-                          },
+                      Positioned(
+                        top: 236.h,
+                        left: 0,
+                        right: 0,
+                        child: Image.asset(
+                          'assets/vector.png',
+                          width: constraints.maxWidth,
+                          height: vectorImageHeight,
+                          fit: BoxFit.fill,
                         ),
                       ),
-                    ),
-                    Positioned(
-                      top: gridTopPadding +
-                          3 * cellHeight +
-                          2 * 0.5 +
-                          kToolbarHeight.h +
-                          20.h,
-                      left: 0,
-                      right: 0,
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 25.w),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Score P1',
-                                      style: TextStyle(
-                                        fontFamily: 'Lineal',
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 20.r,
-                                        color: currentPlayer == 1
-                                            ? Color.fromRGBO(255, 102, 56, 1)
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 124.w,
-                                      height: scoreContainerHeight,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(35.r),
-                                        border: Border.all(
+                      Positioned(
+                        top: gridTopPadding,
+                        left: gridSidePadding,
+                        right: gridSidePadding,
+                        child: Container(
+                          width: constraints.maxWidth - 2 * gridSidePadding,
+                          height: 3 * cellHeight + 2 * 0.5,
+                          child: GridView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: 12,
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4,
+                              childAspectRatio: cellWidth / cellHeight,
+                            ),
+                            itemBuilder: (context, index) {
+                              int row = index ~/ 4 + 1;
+                              int column = index % 4 + 1;
+                              return Container(
+                                width: cellWidth,
+                                height: cellHeight,
+                                decoration: BoxDecoration(
+                                  color: const Color.fromRGBO(206, 231, 242, 1),
+                                  border: Border.all(
+                                      color: Colors.black, width: 0.5),
+                                ),
+                                child: Center(
+                                  child: row == ballRow && column == ballColumn
+                                      ? Image.asset(
+                                          'assets/ball.png',
+                                          width: 37.r,
+                                          height: 37.r,
+                                        )
+                                      : null,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: gridTopPadding +
+                            3 * cellHeight +
+                            2 * 0.5 +
+                            kToolbarHeight.h +
+                            20.h,
+                        left: 0,
+                        right: 0,
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 25.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Score P1',
+                                        style: TextStyle(
+                                          fontFamily: 'Lineal',
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20.r,
                                           color: currentPlayer == 1
-                                              ? Color.fromRGBO(255, 102, 56, 1)
+                                              ? const Color.fromRGBO(
+                                                  255, 102, 56, 1)
                                               : Colors.white,
-                                          width: 2,
                                         ),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          '$player1Score',
-                                          style: TextStyle(
-                                            fontFamily: 'Lineal',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 32.r,
-                                            height: 0.03.h,
+                                      Container(
+                                        width: 124.w,
+                                        height: scoreContainerHeight,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(35.r),
+                                          border: Border.all(
                                             color: currentPlayer == 1
-                                                ? Color.fromRGBO(
+                                                ? const Color.fromRGBO(
                                                     255, 102, 56, 1)
                                                 : Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '$player1Score',
+                                            style: TextStyle(
+                                              fontFamily: 'Lineal',
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 32.r,
+                                              height: 0.03.h,
+                                              color: currentPlayer == 1
+                                                  ? const Color.fromRGBO(
+                                                      255, 102, 56, 1)
+                                                  : Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      'Time',
-                                      style: TextStyle(
-                                        fontFamily: 'Lineal',
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 20.r,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 124.w,
-                                      height: scoreContainerHeight,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(35.r),
-                                        border: Border.all(
+                                    ],
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        'Time',
+                                        style: TextStyle(
+                                          fontFamily: 'Lineal',
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20.r,
                                           color: Colors.white,
-                                          width: 2,
                                         ),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          '${_timeLeft} sec',
-                                          style: TextStyle(
-                                            fontFamily: 'Lineal',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 32.r,
-                                            height: 0.03.h,
+                                      Container(
+                                        width: 124.w,
+                                        height: scoreContainerHeight,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(35.r),
+                                          border: Border.all(
                                             color: Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '${_timeLeft} sec',
+                                            style: TextStyle(
+                                              fontFamily: 'Lineal',
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 32.r,
+                                              height: 0.03.h,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 12.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 25.w),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Score P2',
-                                      style: TextStyle(
-                                        fontFamily: 'Lineal',
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: 20.r,
-                                        color: currentPlayer == 2
-                                            ? Color.fromRGBO(255, 102, 56, 1)
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                    Container(
-                                      width: 124.w,
-                                      height: scoreContainerHeight,
-                                      margin: EdgeInsets.only(top: 5.h),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(35.r),
-                                        border: Border.all(
+                            SizedBox(height: 12.h),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 25.w),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Score P2',
+                                        style: TextStyle(
+                                          fontFamily: 'Lineal',
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: 20.r,
                                           color: currentPlayer == 2
-                                              ? Color.fromRGBO(255, 102, 56, 1)
+                                              ? const Color.fromRGBO(
+                                                  255, 102, 56, 1)
                                               : Colors.white,
-                                          width: 2,
                                         ),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          '$player2Score',
-                                          style: TextStyle(
-                                            fontFamily: 'Lineal',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 32.r,
-                                            height: 0.03.h,
+                                      Container(
+                                        width: 124.w,
+                                        height: scoreContainerHeight,
+                                        margin: EdgeInsets.only(top: 5.h),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(35.r),
+                                          border: Border.all(
                                             color: currentPlayer == 2
-                                                ? Color.fromRGBO(
+                                                ? const Color.fromRGBO(
                                                     255, 102, 56, 1)
                                                 : Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            '$player2Score',
+                                            style: TextStyle(
+                                              fontFamily: 'Lineal',
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 32.r,
+                                              height: 0.03.h,
+                                              color: currentPlayer == 2
+                                                  ? const Color.fromRGBO(
+                                                      255, 102, 56, 1)
+                                                  : Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Positioned.fill(
-                      child: Column(
-                        children: [
-                          SizedBox(height: 45.h + kToolbarHeight.h + 10.h),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 30.w),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: options.sublist(0, 2).map((option) {
-                                    return Container(
-                                      width: 135.w,
-                                      height: 50.h,
-                                      margin: EdgeInsets.only(bottom: 10.h),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(25.r),
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: () => _checkAnswer(option),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.transparent,
-                                          shadowColor: Colors.transparent,
-                                        ),
-                                        child: Text(
-                                          option,
-                                          style: TextStyle(
-                                            fontFamily: 'Lineal',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 20.sp,
-                                            height: 22 / 20,
-                                            color:
-                                                Color.fromRGBO(255, 102, 56, 1),
+                      Positioned.fill(
+                        child: Column(
+                          children: [
+                            SizedBox(height: 45.h + kToolbarHeight.h + 10.h),
+                            Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 30.w),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children:
+                                        options.sublist(0, 2).map((option) {
+                                      return Container(
+                                        width: 135.w,
+                                        height: 50.h,
+                                        margin: EdgeInsets.only(bottom: 10.h),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25.r),
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: options.sublist(2, 4).map((option) {
-                                    return Container(
-                                      width: 135.w,
-                                      height: 50.h,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(25.r),
-                                        border: Border.all(
-                                          color: Colors.white,
-                                          width: 2,
-                                        ),
-                                      ),
-                                      child: ElevatedButton(
-                                        onPressed: () => _checkAnswer(option),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: Colors.transparent,
-                                          shadowColor: Colors.transparent,
-                                        ),
-                                        child: Text(
-                                          option,
-                                          style: TextStyle(
-                                            fontFamily: 'Lineal',
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 20.sp,
-                                            height: 22 / 20,
-                                            color:
-                                                Color.fromRGBO(255, 102, 56, 1),
+                                        child: ElevatedButton(
+                                          onPressed: () => _checkAnswer(option),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                          ),
+                                          child: Text(
+                                            option,
+                                            style: TextStyle(
+                                              fontFamily: 'Lineal',
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 20.sp,
+                                              height: 22 / 20,
+                                              color: const Color.fromRGBO(
+                                                  255, 102, 56, 1),
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                                SizedBox(
-                                  height: 336.h,
-                                ),
-                              ],
+                                      );
+                                    }).toList(),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children:
+                                        options.sublist(2, 4).map((option) {
+                                      return Container(
+                                        width: 135.w,
+                                        height: 50.h,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(25.r),
+                                          border: Border.all(
+                                            color: Colors.white,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        child: ElevatedButton(
+                                          onPressed: () => _checkAnswer(option),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.transparent,
+                                            shadowColor: Colors.transparent,
+                                          ),
+                                          child: Text(
+                                            option,
+                                            style: TextStyle(
+                                              fontFamily: 'Lineal',
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 20.sp,
+                                              height: 22 / 20,
+                                              color: const Color.fromRGBO(
+                                                  255, 102, 56, 1),
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                  SizedBox(
+                                    height: 336.h,
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
