@@ -443,7 +443,7 @@ class _TwoPlayerGamePageState extends State<TwoPlayerGamePage> with RouteAware {
                                 children: [
                                   Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         'Score P1',
@@ -490,7 +490,8 @@ class _TwoPlayerGamePageState extends State<TwoPlayerGamePage> with RouteAware {
                                     ],
                                   ),
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         'Time',
@@ -539,7 +540,7 @@ class _TwoPlayerGamePageState extends State<TwoPlayerGamePage> with RouteAware {
                                 children: [
                                   Column(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         'Score P2',
