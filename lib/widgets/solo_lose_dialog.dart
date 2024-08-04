@@ -82,20 +82,32 @@ class SoloLoseDialog extends StatelessWidget {
                     ),
                     color: Colors.white,
                   ),
-                  child: TextButton(
-                    onPressed: onPlayAgain,
-                    style: TextButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      minimumSize: Size(124.w, 40.h),
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  child: Container(
+                    width: 124.w,
+                    height: 40.h,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(25.r),
+                      border: Border.all(
+                        color: Color(0xFFFF6638).withOpacity(0.25),
+                        width: 2,
+                      ),
+                      color: Colors.white,
                     ),
-                    child: Text(
-                      'Play Again',
-                      style: TextStyle(
-                        fontFamily: 'Lineal',
-                        fontWeight: FontWeight.w400,
-                        fontSize: 16.sp,
-                        color: Color(0xFFFF6638),
+                    child: TextButton(
+                      onPressed: onPlayAgain,
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size(124.w, 40.h),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      ),
+                      child: Text(
+                        'Play Again',
+                        style: TextStyle(
+                          fontFamily: 'Lineal',
+                          fontWeight: FontWeight.w400,
+                          fontSize: 16.sp,
+                          color: Color(0xFFFF6638),
+                        ),
                       ),
                     ),
                   ),

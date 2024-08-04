@@ -74,30 +74,41 @@ class PremiumDialog extends StatelessWidget {
               ),
               SizedBox(height: 22.h),
               Container(
-                width: 158.w,
-                height: 46.h,
+                width: 128.w,
+                height: 44.h,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25.r),
                   border: Border.all(
                     color: const Color.fromRGBO(255, 102, 56, 1),
                     width: 2,
                   ),
-                  color: Colors.white,
                 ),
-                child: TextButton(
-                  onPressed: onDetails,
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size(158.w, 46.h),
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                child: Container(
+                  width: 124.w,
+                  height: 40.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(25.r),
+                    border: Border.all(
+                      color: const Color.fromRGBO(255, 102, 56, 0.25),
+                      width: 2,
+                    ),
+                    color: Colors.white,
                   ),
-                  child: Text(
-                    'See Details',
-                    style: TextStyle(
-                      fontFamily: 'Lineal',
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16.sp,
-                      color: const Color.fromRGBO(255, 102, 56, 1),
+                  child: TextButton(
+                    onPressed: onDetails,
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      minimumSize: Size(124.w, 40.h),
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    child: Text(
+                      'See Details',
+                      style: TextStyle(
+                        fontFamily: 'Lineal',
+                        fontWeight: FontWeight.w400,
+                        fontSize: 16.sp,
+                        color: const Color.fromRGBO(255, 102, 56, 1),
+                      ),
                     ),
                   ),
                 ),

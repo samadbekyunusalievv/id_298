@@ -27,7 +27,7 @@ class PremiumScreen extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/prem_bg.png', // Use the provided background image asset path
+              'assets/prem_bg.png',
               fit: BoxFit.fill,
             ),
           ),
@@ -90,49 +90,60 @@ class PremiumScreen extends StatelessWidget {
                         color: const Color.fromRGBO(255, 102, 56, 1),
                         width: 2,
                       ),
-                      color: Colors.white,
                     ),
-                    child: TextButton(
-                      onPressed: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        await prefs.setBool('isPremiumUser', true);
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Congratulations!'),
-                              content: Text('You are now a premium user.'),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text('OK'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    onStatusChanged();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        minimumSize: Size(158.w, 46.h),
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    child: Container(
+                      width: 154.w,
+                      height: 42.h,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25.r),
+                        border: Border.all(
+                          color: const Color.fromRGBO(255, 102, 56, 0.25),
+                          width: 2,
+                        ),
+                        color: Colors.white,
                       ),
-                      child: Text(
-                        'Get Premium',
-                        style: TextStyle(
-                          fontFamily: 'Lineal',
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16.sp,
-                          color: const Color.fromRGBO(255, 102, 56, 1),
+                      child: TextButton(
+                        onPressed: () async {
+                          SharedPreferences prefs =
+                              await SharedPreferences.getInstance();
+                          await prefs.setBool('isPremiumUser', true);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Congratulations!'),
+                                content: Text('You are now a premium user.'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: Text('OK'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      onStatusChanged();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: Size(154.w, 42.h),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
+                        child: Text(
+                          'Get Premium',
+                          style: TextStyle(
+                            fontFamily: 'Lineal',
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16.sp,
+                            color: const Color.fromRGBO(255, 102, 56, 1),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(height: 40.h), // Add some space at the bottom
+                  SizedBox(height: 40.h),
                 ],
               ),
             ),
